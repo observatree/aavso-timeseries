@@ -1,0 +1,10 @@
+Requirements per email from George Silvis on March 23rd, 2017:
+
+- A sequence will be an observer observing a target star over some period of time.
+- Don't really care if there is a filter change. 
+- Can't assume the records will be contiguous in the db. Mostly they will be; they will have been batch loaded into the system. But an observer may delete records and resubmit some of them. Or not submit them in chronological order. So that means sorting by JD, date of observation, and then by observer.
+- Careful with the JD: they are real numbers, but in the db as varchar. A sort in that mode could be affected by the number of sigdig they entered, yes?
+- There will need to be a time criteria too. If Observer A has 100 observation of B on Tuesday and another 100 on Wednesday, that's not a sequence of 200.
+- Patterns of observations. 
+   - When I do photometry it usually about 15 images, 5x BVI. Images one after another. Do we have exposure time in the db? We could monitor inter-image time maybe.
+   - An Eclipsing Binary run will be up to 200 observations in a row. And the Exoplanet people are going to be submitting 400 image sequences, easy.
