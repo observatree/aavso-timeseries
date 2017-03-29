@@ -6,5 +6,8 @@
 
 # Files JetBrains says to ignore (see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems)
 aavso-timeseries-py/.idea/workspace.xml
+aavso-timeseries-py/.idea/tasks.xml
 # This file changes too much to check in:
 aavso-timeseries-py/.idea/misc.xml
+# Also doesn't look like it should be checked in:
+aavso-timeseries-py/.idea/dataSources.local.xml
