@@ -1,0 +1,93 @@
+Observations
+
+    unique_id: A unique number assigned to each observation, this is not the same as the UID for the raw table
+    Designation: The AAVSO Harvard Designation
+    name: The AAVSO Name
+    AUID: The AAVSO Unique Identifier
+    JD: The Julian Date of the observation
+    arrivaldate: The JD of when the observation was received by HQ (for electronically submitted observations)
+    band: The observation's bandpass code, described in the bands table.
+    fainterthan: If the object was not seen, then the magnitude given is the value of the faintest comp star seen. 1 is yes, 0 is no, 2 is the rare brighter than
+    magnitude: The magnitude estimate
+    uncertainty: Reported uncertainty by the observer
+    uncertaintyhq: An uncertainty calculated by HQ based on check and comp stars values
+    commentcode: Comment codes
+    obscode: The AAVSO observer code
+    comp1_C: The first comp star for visual observations, usually the label of the star on the AAVSO chart (112, 130, etc.)
+    comp2_K: The second comp star for visual observations, the check star for photoelectric observations
+    charts: The Chart ID submitted as the observer, usually in the YYMMDD form of a date.
+    valflag: The validation flag
+    obstype: A code used to indicate the method used to make an observation.
+    HJD: The Heliocentric Julian Date.
+    comments: Comments as submitted by the observer.
+    airmass: The airmass as reported by the observer.
+    transformed: If transformation coefficients were used, this is 1 for yes (0 for no).
+    step: The step sequence (eg. A4V2B or V <A)
+    mtype: 0 or null if standard; 1 if differential (*requires* the use of comp1_C); 2 if step (magnitude will read 0.0, "step" field will contain sequence information); 3 if observer is reporting "no flare" and not supplying a magnitude.
+    Cmag: The comp star supplied magnitude for photoelectric observations.
+    Kmag: The comp star measured magnitude for photoelectric observations.
+    group: Observer defined set of observations of one object for use in color indexing.
+    software: The photometry software used.
+    source: A character denoting how the observation was received at HQ.
+    organization: Tinyint field denoting an index referencing the organization an observer belongs to at the time the observation was made. This field references web_django.hq_person.organization.
+    digitizer: The observer code of the person who *digitized* an archival record by another observer (e.g. an observation from the literature, keypunched by a volunteer -- this would be the volunteer's observer code.)
+    pubref: The ADS BibCode or similarly-styled record indication the reference that the observation was taken from if it was a digitized observation. If this string is not an actual ADS BibCode, please precede it with the string "x_" and give the journal name, volume, and page number if available (e.g. "x_1908MmRASv58p34")
+    credit: This field contains a three digit code which goes to the credits lookup table. It is used to give credit to another organization for use of the database (e.g. BAAVSS)
+
+
+Bands
+
+W indicates that the filter is choosable from WebObs. A bold indication indicates this is a new filter or a change as of June 2009. The shortName (used in the data download program, zapper, and other things) is given in parentheses.
+
+    0, Visual (Vis.)
+    1, Unknown (N/A)
+    2, W, Johnson V (V)
+    3, W, Johnson B (B)
+    4, W, Cousins R (R)
+    5, W, Cousins I (I)
+    6, Orange (Orange)
+    7, W, Johnson U (U)
+    8, W, Unfiltered with V Zeropoint (CV)
+    9, W, Unfiltered with Red Zeropoint (CR)
+    10, Johnson R (RJ)
+    11, Johnson I (IJ)
+    13, Halpha (HA)
+    14, Halpha-continuum (HAC)
+    21, blue (Blue-Vis.)
+    22, green, no longer in WebObs (Green-Vis.)
+    23, red (Red-Vis.)
+    24, yellow (Yellow-Vis.)
+    26, W, K NIR 2.2micron (K)
+    27, W, H NIR 1.6micron (H)
+    28, W, J NIR 1.2micron (J)
+    29, W, Sloan z (SZ)
+    30, Stromgren u (STU)
+    31, Stromgren v (STV)
+    32, Stromgren b (STB)
+    33, Stromgren y (STY)
+    34, Stromgren Hbw (H-beta, wide) (STHBW)
+    35, Stromgren Hbn (H-beta, narrow) (STHBN)
+    40, W, Sloan u (SU)
+    41, W, Sloan g (SG)
+    42, W, Sloan r (SR)
+    43, W, Sloan i (SI)
+    44, PanSTARRS Z-short (ZS)
+    45, PanSTARRS Y (Y)
+    50, W, Tri-Color Blue (TB)
+    51, W, Tri-Color Green (TG)
+    52, W, Tri-Color Red (TR)
+    55, Optec Wing A (MA)
+    56, Optec Wing B (MB)
+    57, Optec Wing C (MI)
+
+Obstypes
+
+This is an enum-type field so the value should be enclosed in single quote marks.
+
+    1 for visual
+    2 for CCD
+    3 for PEP
+    4 for wedge photometer
+    5 for photographic
+    6 for DSLR
+    7 VISDIG (i.e. visual observation made from a digital image)
