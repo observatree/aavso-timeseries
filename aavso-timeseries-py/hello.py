@@ -10,13 +10,11 @@ cnx = mysql.connector.connect(user='leavitt', password=os.environ['MYSQL_PASSWOR
 
 cursor = cnx.cursor()
 
-query = "SELECT DISTINCT obscode FROM temp_observations"
+query = "SELECT DISTINCT name, obscode FROM temp_observations"
 
 cursor.execute(query)
 
-for (observer_code) in cursor:
-    print("{}, is an obscode".format(observer_code))
-
+for (name, observer_code) in cursor:
+    print("Processing {}'s observations of {}".format(observer_code, name))
 
 cnx.close()
-
