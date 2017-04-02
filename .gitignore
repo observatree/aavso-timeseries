@@ -10,3 +10,4 @@ aavso-timeseries-py/.idea/workspace.xml
 aavso-timeseries-py/.idea/misc.xml
 # Also doesn't look like it should be checked in:
 aavso-timeseries-py/.idea/dataSources.local.xml
+aavso-timeseries-py/__pycache__/
