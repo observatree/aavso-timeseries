@@ -1,6 +1,11 @@
 
 import os
 
+
+# The following import will bomb out unless you have done something like
+# $ conda install -c anaconda mysql-connector-python=2.0.4
+# in your anaconda3 environment. Currently, my environment is
+# ~/Applications/Anaconda/anaconda3/envs/py361/bin/python
 import mysql.connector
 
 from processing import identify_timeseries, Observation
