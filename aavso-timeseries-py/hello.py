@@ -10,7 +10,7 @@ import mysql.connector
 
 from processing import identify_timeseries, Observation
 
-USER = 'leavitt'
+USER = os.environ['MYSQL_USER']  # 'leavitt'
 HOST = '127.0.0.1'
 DATABASE = 'test'
 # So that the password does not appear in the code, the password is read from an environment variable.
