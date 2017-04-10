@@ -44,8 +44,7 @@ for (name, observer_code) in outer_cursor:
     for (unique_id, julian_date) in inner_cursor:
         observation = Observation(unique_id=unique_id,
                                   julian_date_string=julian_date,
-                                  julian_date=None,
-                                  timeseries=None)
+                                  julian_date=None)
         observations.append(observation)
 
     time_series = identify_timeseries(observations)
