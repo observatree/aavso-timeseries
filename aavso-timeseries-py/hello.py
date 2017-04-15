@@ -8,7 +8,7 @@ import os
 # ~/Applications/Anaconda/anaconda3/envs/py361/bin/python
 import mysql.connector
 
-from processing import identify_timeseries, Observation
+from processing import identify_timeseries, Observation, N0, N1, N2, N3, N4
 
 USER = os.environ['MYSQL_USER']
 # So that the password does not appear in the code, the password is read from an environment variable.
@@ -59,22 +59,29 @@ def write_timeseries(timeseries_dict):
 
 def outer_processing_loop():
     # noinspection PyUnresolvedReferences
+    cnt= 0
     cnx_outer = mysql.connector.connect(user=USER,
                                         password=PASSWORD,
                                         host=HOST,
                                         database=DATABASE)  # type: mysql.connector.connection.MySQLConnection
-    outer_cursor = cnx_outer.cursor()
+    outer_cursor = cnx_outer.cursor(buffered=True) # buffer so its not necessary to read the whole result
     outer_query = "SELECT DISTINCT name, obscode FROM temp_observations"
     outer_cursor.execute(outer_query)
+    print(outer_cursor.rowcount) # how many cases to process?
     for (star_name, observer_code) in outer_cursor:
-        print("Processing {}'s observations of {}....".format(observer_code, star_name))
+        #print("Processing {}'s observations of {}....".format(observer_code, star_name))
         observations = read_name_observer(star_name, observer_code)
         timeseries_dict = identify_timeseries(observations)
-        print("Identified {} time series".format(len(timeseries_dict)))
+        #print("Identified {} time series".format(len(timeseries_dict)))
         write_timeseries(timeseries_dict)
+        cnt+= 1
+        if (cnt % 100) == 0: # A progress-bar, because it's going to take a while
+            print (cnt, N0,N1,N2,N3,N4 )
 
     outer_cursor.close()
     cnx_outer.close()
+
+    print (N0,N1,N2,N3,N4)
 
 
 if __name__ == "__main__":
