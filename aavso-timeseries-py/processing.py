@@ -9,14 +9,24 @@ Observation = collections.namedtuple("Observation", "unique_id julian_date_strin
 def convert_julian_date_string(julian_date_string):
     return float(julian_date_string)  # almost all platforms map Python floats to IEEE-754 "double precision"
 
+N0= N1= N2= N3= N4= 0
 
 def validated(observation):
-    if not observation.unique_id or not observation.julian_date_string:
+    global N0, N1, N2, N3, N4
+    N0+= 1
+
+    if not observation.unique_id:
+        N1+= 1
+        return None
+
+    if  not observation.julian_date_string:
+        N2+= 1
         return None
 
     julian_date = convert_julian_date_string(observation.julian_date_string)
 
     if not julian_date:
+        N3+= 1
         return None
 
     return Observation(unique_id=observation.unique_id,
@@ -25,8 +35,10 @@ def validated(observation):
 
 
 def proximity_test(observation, last_observation):
+    global N4
     if observation.julian_date == last_observation.julian_date:
         # This is just a duplicate observation! It is not our charge to flag duplicates as timeseries
+        N4+= 1
         return False
     else:
         return observation.julian_date - last_observation.julian_date < TIMESERIES_THRESHOLD
