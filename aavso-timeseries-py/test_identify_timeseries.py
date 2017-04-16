@@ -16,8 +16,6 @@ TEST_OBSERVATIONS = [
     Observation(unique_id=7, julian_date=None, julian_date_string="18.86"),
     Observation(unique_id=8, julian_date=None, julian_date_string="18.87"),
     Observation(unique_id=9, julian_date=None, julian_date_string="19.00"),
-    Observation(unique_id=981, julian_date=None, julian_date_string="20.00"),
-    Observation(unique_id=982, julian_date=None, julian_date_string="20.00"),
 ]
 
 
