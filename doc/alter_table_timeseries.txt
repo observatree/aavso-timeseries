@@ -1,0 +1,13 @@
+Will need to do something like this to the test database supplied by the AAVSO:
+
+mysql> USE test;
+Database changed
+mysql> ALTER TABLE temp_observations DROP COLUMN inTimeSeries;
+Query OK, 0 rows affected (1 min 17.29 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE temp_observations ADD COLUMN timeseries INT(13);
+Query OK, 0 rows affected (1 min 4.17 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> 

@@ -1,12 +1,13 @@
 
 import collections
 
+TIMESERIES_THRESHOLD = 0.04166666666  # This is 1/24 (e.g., one hour)
 
 Observation = collections.namedtuple("Observation", "unique_id julian_date_string julian_date")
 
 
 def convert_julian_date_string(julian_date_string):
-    return float(julian_date_string)
+    return float(julian_date_string)  # almost all platforms map Python floats to IEEE-754 "double precision"
 
 
 def validated(observation):
@@ -23,13 +24,51 @@ def validated(observation):
                        julian_date=julian_date)
 
 
+def proximity_test(observation, last_observation):
+    if observation.julian_date == last_observation.julian_date:
+        # This is just a duplicate observation! It is not our charge to flag duplicates as timeseries
+        return False
+    else:
+        return observation.julian_date - last_observation.julian_date < TIMESERIES_THRESHOLD
+
+
+# This routine does the actual work of identifying proximate observations.
+# It presumes that the julian_date field is set within the observations and
+# that the observations are already sorted ascending by julian_date.
+def __identify_timeseries(observations: [Observation]):
+    timeseries_dict = dict()
+    last_observation = None
+
+    proximate_observations = None
+
+    for observation in observations:
+        if last_observation:
+
+            if proximity_test(observation, last_observation):
+                if not proximate_observations:
+                    proximate_observations = [last_observation, observation]
+                else:
+                    proximate_observations.append(observation)
+            else:
+                if proximate_observations:
+                    timeseries = proximate_observations[0].unique_id
+                    timeseries_dict[timeseries] = proximate_observations
+                    proximate_observations = None
+
+        last_observation = observation
+
+    # Perhaps on the last observation a timeseries was still being added.
+    if proximate_observations:
+        timeseries = proximate_observations[0].unique_id
+        timeseries_dict[timeseries] = proximate_observations
+
+    return timeseries_dict
+
+
 # It is presumed that identify_timeseries will be called with a list of records that are
 # all from the same observer and the same star. Therefore all that identify_timeseries has
 # to do is examine the Julian dates and look for proximity.
-
 def identify_timeseries(observations: [Observation]):
-
-    print("{} observations".format(len(observations)))
 
     validated_observations = []
 
@@ -44,4 +83,4 @@ def identify_timeseries(observations: [Observation]):
 
     validated_observations.sort(key=lambda x: x.julian_date)
 
-    return
+    return __identify_timeseries(validated_observations)
