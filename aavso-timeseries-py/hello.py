@@ -6,7 +6,6 @@ import os
 # ~/Applications/Anaconda/anaconda3/envs/py361/bin/python
 import mysql.connector
 import time
-import collections
 
 from processing import identify_timeseries, Observation, N0, N1, N2, N3, N4, TIMESERIES_THRESHOLD
 
@@ -100,10 +99,10 @@ def processing_loop2():
     cnt = 0
 
     lastobs = dict()
-    ##lastobsentry = collections.namedtuple("lastobsentry", "unique_id jd ts")
-    ind_id= 0
-    ind_jd= 1
-    ind_ts= 2
+    # lastobsentry = collections.namedtuple("lastobsentry", "unique_id jd ts")
+    ind_id = 0
+    ind_jd = 1
+    ind_ts = 2
     # set up to write the ts field
     cnx = mysql.connector.connect(user=USER,
                                   password=PASSWORD,
@@ -112,7 +111,7 @@ def processing_loop2():
     write_cursor = cnx.cursor()
 
     for (unique_id, JD, name, obscode) in outer_cursor:
-        jdf= float(JD) # nb JD is varchar
+        jdf = float(JD)  # nb JD is varchar
         h = name + obscode  # simplest hash
         if h in lastobs:
             if jdf - lastobs[h][ind_jd] < TIMESERIES_THRESHOLD:  # this obs is in a ts
@@ -123,15 +122,15 @@ def processing_loop2():
                 clearts = True
             # if we knew db had nulls in timeseries, could avoid writing the nulls over again
             update_statement = ('UPDATE temp_observations SET timeseries2={} '
-                                 'WHERE unique_id={}').format(lastobs[h][ind_ts], lastobs[h][ind_id])
+                                'WHERE unique_id={}').format(lastobs[h][ind_ts], lastobs[h][ind_id])
             # print(update_statement)
-            if(lastobs[h][ind_ts]!= None):
+            if lastobs[h][ind_ts]:
                 write_cursor.execute(update_statement)
             #   this fails when trying to write None to the timerseries2 field. Needs to be null
             #   this next line solves that problem, supposedly
             #   but nothing is getting written.
-            #update_statement = """UPDATE temp_observations SET timeseries2=%s WHERE unique_id=%s"""
-            #write_cursor.execute(update_statement, lastobs[h][ind_ts], lastobs[h][ind_id])
+            #   update_statement = """UPDATE temp_observations SET timeseries2=%s WHERE unique_id=%s"""
+            #   write_cursor.execute(update_statement, lastobs[h][ind_ts], lastobs[h][ind_id])
 
             lastobs[h][ind_id] = unique_id
             lastobs[h][ind_jd] = jdf
