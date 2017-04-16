@@ -1,13 +1,22 @@
-Will need to do something like this to the test database supplied by the AAVSO:
+Will need to do something like this to the test database supplied by the AAVSO.
+
+The supplied database has 4,820,120 observations.
+
+Just adding a column takes over three minutes on an 8 GB 2.2 GHz Core i7
+Early 2015 MacBook Air with 512GB SSD storage. Dropping the column also takes
+over three minutes. I suspect the times are limited by the drive's write speed.
+
+mysql> ALTER TABLE temp_observations DROP COLUMN timeseries;
 
 mysql> USE test;
 Database changed
-mysql> ALTER TABLE temp_observations DROP COLUMN inTimeSeries;
-Query OK, 0 rows affected (1 min 17.29 sec)
+
+mysql> ALTER TABLE temp_observations DROP COLUMN timeseries;
+Query OK, 0 rows affected (3 min 19.02 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
 mysql> ALTER TABLE temp_observations ADD COLUMN timeseries INT(13);
-Query OK, 0 rows affected (1 min 4.17 sec)
+Query OK, 0 rows affected (3 min 25.80 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
 mysql> 

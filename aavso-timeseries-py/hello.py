@@ -16,14 +16,14 @@ HOST = '127.0.0.1'
 DATABASE = 'test'
 
 
-def read_name_observer(name, observer):
+def read_name_observer_band(name, observer, band):
     # noinspection PyUnresolvedReferences
     cnx_inner = mysql.connector.connect(user=USER,
                                         password=PASSWORD,
                                         host=HOST,
                                         database=DATABASE)  # type: mysql.connector.connection.MySQLConnection
     inner_query = ('SELECT unique_id, JD FROM temp_observations '
-                   'WHERE name="{}" AND obscode="{}"').format(name, observer)
+                   'WHERE name="{}" AND obscode="{}" AND band="{}"').format(name, observer, band)
     inner_cursor = cnx_inner.cursor()
     inner_cursor.execute(inner_query)
     observations = []
@@ -64,12 +64,12 @@ def outer_processing_loop():
                                         host=HOST,
                                         database=DATABASE)  # type: mysql.connector.connection.MySQLConnection
     outer_cursor = cnx_outer.cursor(buffered=True)  # buffer so its not necessary to read the whole result
-    outer_query = "SELECT DISTINCT name, obscode FROM temp_observations"
+    outer_query = "SELECT DISTINCT name, obscode, band FROM temp_observations"
     outer_cursor.execute(outer_query)
     print(outer_cursor.rowcount)  # how many cases to process?
-    for (star_name, observer_code) in outer_cursor:
-        # print("Processing {}'s observations of {}....".format(observer_code, star_name))
-        observations = read_name_observer(star_name, observer_code)
+    for (star_name, observer_code, band) in outer_cursor:
+        # print("Processing {}'s observations of {} in band {}....".format(observer_code, star_name, band))
+        observations = read_name_observer_band(star_name, observer_code, band)
         timeseries_dict = identify_timeseries(observations)
         # print("Identified {} time series".format(len(timeseries_dict)))
         write_timeseries(timeseries_dict)
@@ -126,7 +126,7 @@ def processing_loop2():
             # print(update_statement)
             if lastobs[h][ind_ts]:
                 write_cursor.execute(update_statement)
-            #   this fails when trying to write None to the timerseries2 field. Needs to be null
+            #   this fails when trying to write None to the timeseries2 field. Needs to be null
             #   this next line solves that problem, supposedly
             #   but nothing is getting written.
             #   update_statement = """UPDATE temp_observations SET timeseries2=%s WHERE unique_id=%s"""
@@ -164,5 +164,5 @@ def processing_loop2():
 
 
 if __name__ == "__main__":
-    # outer_processing_loop()
-    processing_loop2()
+    outer_processing_loop()
+    # processing_loop2()

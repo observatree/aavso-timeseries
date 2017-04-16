@@ -82,9 +82,9 @@ def __identify_timeseries(observations: [Observation]):
     return timeseries_dict
 
 
-# It is presumed that identify_timeseries will be called with a list of records that are
-# all from the same observer and the same star. Therefore all that identify_timeseries has
-# to do is examine the Julian dates and look for proximity.
+# It is presumed that identify_timeseries will be called with a list of records that
+# are all from the same observer, the same star and the same band. Therefore all that
+# identify_timeseries has to do is examine the Julian dates and look for proximity.
 def identify_timeseries(observations: [Observation]):
 
     validated_observations = []
