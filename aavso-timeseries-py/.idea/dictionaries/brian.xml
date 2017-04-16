@@ -4,6 +4,8 @@
       <w>conda</w>
       <w>envs</w>
       <w>ieee</w>
+      <w>lastobs</w>
+      <w>lastobsentry</w>
       <w>leavitt</w>
       <w>obscode</w>
       <w>timeseries</w>
