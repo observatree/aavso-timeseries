@@ -1,0 +1,47 @@
+Will need to do something like this to the test database supplied by the AAVSO.
+
+The supplied database has 4,820,120 observations.
+
+Just adding a column takes over three minutes on an 8 GB 2.2 GHz Core i7
+Early 2015 MacBook Air with 512GB SSD storage. Dropping the column also takes
+over three minutes. I suspect the times are limited by the drive's write speed.
+
+mysql> ALTER TABLE temp_observations DROP COLUMN timeseries;
+
+mysql> USE test;
+Database changed
+
+mysql> ALTER TABLE temp_observations DROP COLUMN timeseries;
+Query OK, 0 rows affected (3 min 19.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE temp_observations ADD COLUMN timeseries INT(13);
+Query OK, 0 rows affected (3 min 25.80 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE temp_observations SET timeseries=NULL;
+Query OK, 1013717 rows affected (39.75 sec)
+Rows matched: 4820120  Changed: 1013717  Warnings: 0
+
+mysql> CREATE INDEX name_obscode_band ON temp_observations (name, obscode, band);
+Query OK, 0 rows affected (15.40 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX timeseries ON temp_observations (timeseries);
+Query OK, 0 rows affected (12.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT DISTINCT timeseries FROM temp_observations WHERE timeseries IS NOT NULL;
++------------+
+| timeseries |
++------------+
+| 1263782247 |
+| 1263782249 |
+| 1263782310 |
+| 1263782311 |
+| 1263782422 |
+...
+| 1272426161 |
+| 1272426162 |
++------------+
+113644 rows in set (0.24 sec)

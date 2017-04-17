@@ -9,11 +9,17 @@ Observation = collections.namedtuple("Observation", "unique_id julian_date_strin
 def convert_julian_date_string(julian_date_string):
     return float(julian_date_string)  # almost all platforms map Python floats to IEEE-754 "double precision"
 
+
+# N0 is the total number of observations.
+# N1 is number of observations lacking unique_id. Should never happen!
+# N2 is number of observations lacking a JD. Should also never happen!
+# N3 is number of observations that had a JD, but which wouldn't convert to a float.
+# N4 is number of observations that have a duplicate JD.
 N0 = N1 = N2 = N3 = N4 = 0
 
 
 def validated(observation):
-    global N0, N1, N2, N3, N4
+    global N0, N1, N2, N3
     N0 += 1
 
     if not observation.unique_id:
@@ -38,11 +44,9 @@ def validated(observation):
 def proximity_test(observation, last_observation):
     global N4
     if observation.julian_date == last_observation.julian_date:
-        # This is just a duplicate observation! It is not our charge to flag duplicates as timeseries
         N4 += 1
-        return False
-    else:
-        return observation.julian_date - last_observation.julian_date < TIMESERIES_THRESHOLD
+
+    return observation.julian_date - last_observation.julian_date < TIMESERIES_THRESHOLD
 
 
 # This routine does the actual work of identifying proximate observations.
@@ -78,9 +82,9 @@ def __identify_timeseries(observations: [Observation]):
     return timeseries_dict
 
 
-# It is presumed that identify_timeseries will be called with a list of records that are
-# all from the same observer and the same star. Therefore all that identify_timeseries has
-# to do is examine the Julian dates and look for proximity.
+# It is presumed that identify_timeseries will be called with a list of records that
+# are all from the same observer, the same star and the same band. Therefore all that
+# identify_timeseries has to do is examine the Julian dates and look for proximity.
 def identify_timeseries(observations: [Observation]):
 
     validated_observations = []

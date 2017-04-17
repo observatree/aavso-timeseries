@@ -1,0 +1,1 @@
+SELECT timeseries, name, obscode, band, COUNT(*) INTO OUTFILE '/tmp/basic_demographics.txt' FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' FROM temp_observations WHERE timeseries IS NOT NULL;
