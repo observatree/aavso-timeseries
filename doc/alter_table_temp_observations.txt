@@ -19,4 +19,29 @@ mysql> ALTER TABLE temp_observations ADD COLUMN timeseries INT(13);
 Query OK, 0 rows affected (3 min 25.80 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
-mysql> 
+mysql> UPDATE temp_observations SET timeseries=NULL;
+Query OK, 1013717 rows affected (39.75 sec)
+Rows matched: 4820120  Changed: 1013717  Warnings: 0
+
+mysql> CREATE INDEX name_obscode_band ON temp_observations (name, obscode, band);
+Query OK, 0 rows affected (15.40 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX timeseries ON temp_observations (timeseries);
+Query OK, 0 rows affected (12.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT DISTINCT timeseries FROM temp_observations WHERE timeseries IS NOT NULL;
++------------+
+| timeseries |
++------------+
+| 1263782247 |
+| 1263782249 |
+| 1263782310 |
+| 1263782311 |
+| 1263782422 |
+...
+| 1272426161 |
+| 1272426162 |
++------------+
+113644 rows in set (0.24 sec)

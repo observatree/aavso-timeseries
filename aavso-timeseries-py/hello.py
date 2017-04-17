@@ -58,7 +58,8 @@ def write_timeseries(timeseries_dict):
 
 def outer_processing_loop():
     # noinspection PyUnresolvedReferences
-    cnt = 0
+    cnt = 0  # For monitoring progress.
+    start_time = time.time()
     cnx_outer = mysql.connector.connect(user=USER,
                                         password=PASSWORD,
                                         host=HOST,
@@ -81,6 +82,7 @@ def outer_processing_loop():
     cnx_outer.close()
 
     print(N0, N1, N2, N3, N4)
+    print('{} sec'.format(time.time() - start_time))
 
 
 def processing_loop2():
