@@ -7,7 +7,7 @@ import os
 import mysql.connector
 import time
 
-from processing import identify_timeseries, Observation, N0, N1, N2, N3, N4, TIMESERIES_THRESHOLD
+from timeseries_identification import identify_timeseries, Observation, N0, N1, N2, N3, N4, TIMESERIES_THRESHOLD
 
 USER = os.environ['MYSQL_USER']
 # So that the password does not appear in the code, the password is read from an environment variable.
@@ -57,6 +57,12 @@ def write_timeseries(timeseries_dict):
 
 
 def outer_processing_loop():
+    """Runs a query that identifies all the name/obscode/band combinations.
+
+    For each combination, reads in all observations for that combination.
+
+    Criteria for identifying a times series
+    """
     # noinspection PyUnresolvedReferences
     cnt = 0  # For monitoring progress.
     start_time = time.time()
@@ -76,12 +82,12 @@ def outer_processing_loop():
         write_timeseries(timeseries_dict)
         cnt += 1
         if 0 == (cnt % 100):  # A progress-bar, because it's going to take a while
-            print(cnt, N0, N1, N2, N3, N4)
+            print("combinations={} observations={} N1={} N2={} N3={}, N4={}".format(cnt, N0, N1, N2, N3, N4))
 
     outer_cursor.close()
     cnx_outer.close()
 
-    print(N0, N1, N2, N3, N4)
+    print("combinations={} observations={} N1={} N2={} N3={}, N4={}".format(cnt, N0, N1, N2, N3, N4))
     print('{} sec'.format(time.time() - start_time))
 
 
@@ -163,6 +169,19 @@ def processing_loop2():
     # wrap up outer
     outer_cursor.close()
     cnx_outer.close()
+
+
+# I bracket script execution with this,
+
+# mysql> ALTER TABLE temp_observations DISABLE KEYS;
+# mysql> update temp_observations set timeseries=NULL;
+
+# ... execute the script ...
+
+# mysql> ALTER TABLE temp_observations ENABLE KEYS;
+
+# but it still takes 1533 seconds (almost half an hour) on
+# a 2.2 GHz Intel Core i7 MacBook Air.
 
 
 if __name__ == "__main__":

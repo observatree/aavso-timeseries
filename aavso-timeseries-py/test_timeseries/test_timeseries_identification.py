@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from processing import identify_timeseries, Observation
+from timeseries_identification import identify_timeseries, Observation
 
 # Observations 1, 5 and 9 are not part of any timeseries.
 # Observations 2, 3 and 4 should be grouped into timeseries 1.
@@ -19,14 +19,14 @@ TEST_OBSERVATIONS = [
 ]
 
 
-class TestIdentifyTimeseries(TestCase):
+class TestIdentify(TestCase):
     def test_identify_timeseries(self):
         timeseries = identify_timeseries(TEST_OBSERVATIONS)
-        self.assertEquals(len(timeseries), 2, "There should be two time series in the dictionary.")
+        self.assertEqual(len(timeseries), 2, "There should be two time series in the dictionary.")
         first_timeseries = timeseries[2]
-        self.assertEquals(len(first_timeseries), 3, "There should be three observations in the first time series.")
+        self.assertEqual(len(first_timeseries), 3, "There should be three observations in the first time series.")
         second_timeseries = timeseries[6]
-        self.assertEquals(len(second_timeseries), 3, "There should be three observations in the second time series.")
+        self.assertEqual(len(second_timeseries), 3, "There should be three observations in the second time series.")
         # Spot check the time series
-        self.assertEquals(16.07, first_timeseries[2].julian_date, "Test the third observation in the first series.")
-        self.assertEquals(18.86, second_timeseries[1].julian_date, "Test the second observation in the second series.")
+        self.assertEqual(16.07, first_timeseries[2].julian_date, "Test the third observation in the first series.")
+        self.assertEqual(18.86, second_timeseries[1].julian_date, "Test the second observation in the second series.")
