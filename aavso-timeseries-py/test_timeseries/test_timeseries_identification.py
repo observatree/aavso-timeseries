@@ -7,26 +7,65 @@ from timeseries_identification import identify_timeseries, Observation
 # Observations 7, 8 and 9 should be grouped into timeseries 2.
 
 TEST_OBSERVATIONS = [
-    Observation(unique_id=1, julian_date=None, julian_date_string="15.00"),
-    Observation(unique_id=2, julian_date=None, julian_date_string="16.05"),
-    Observation(unique_id=3, julian_date=None, julian_date_string="16.06"),
-    Observation(unique_id=4, julian_date=None, julian_date_string="16.07"),
-    Observation(unique_id=5, julian_date=None, julian_date_string="17.00"),
-    Observation(unique_id=6, julian_date=None, julian_date_string="18.85"),
-    Observation(unique_id=7, julian_date=None, julian_date_string="18.86"),
-    Observation(unique_id=8, julian_date=None, julian_date_string="18.87"),
-    Observation(unique_id=9, julian_date=None, julian_date_string="19.00"),
+    # FAIL DUE TO GAP FROM 112 TO 113
+    Observation(unique_id=101, julian_date=None, julian_date_string="15.001"),
+    Observation(unique_id=102, julian_date=None, julian_date_string="15.002"),
+    Observation(unique_id=103, julian_date=None, julian_date_string="15.003"),
+    Observation(unique_id=104, julian_date=None, julian_date_string="15.004"),
+    Observation(unique_id=105, julian_date=None, julian_date_string="15.005"),
+    Observation(unique_id=106, julian_date=None, julian_date_string="15.006"),
+    Observation(unique_id=107, julian_date=None, julian_date_string="15.007"),
+    Observation(unique_id=108, julian_date=None, julian_date_string="15.008"),
+    Observation(unique_id=109, julian_date=None, julian_date_string="15.009"),
+    Observation(unique_id=110, julian_date=None, julian_date_string="15.010"),
+    Observation(unique_id=111, julian_date=None, julian_date_string="15.011"),
+    Observation(unique_id=112, julian_date=None, julian_date_string="15.012"),
+    Observation(unique_id=113, julian_date=None, julian_date_string="16.013"),
+    Observation(unique_id=114, julian_date=None, julian_date_string="16.014"),
+    Observation(unique_id=115, julian_date=None, julian_date_string="16.015"),
+    Observation(unique_id=116, julian_date=None, julian_date_string="16.016"),
+    Observation(unique_id=117, julian_date=None, julian_date_string="16.017"),
+    Observation(unique_id=118, julian_date=None, julian_date_string="16.018"),
+    Observation(unique_id=119, julian_date=None, julian_date_string="16.019"),
+    Observation(unique_id=120, julian_date=None, julian_date_string="16.020"),
+    Observation(unique_id=121, julian_date=None, julian_date_string="16.021"),
+    Observation(unique_id=122, julian_date=None, julian_date_string="16.022"),
+    Observation(unique_id=123, julian_date=None, julian_date_string="16.023"),
+    Observation(unique_id=124, julian_date=None, julian_date_string="16.024"),
+    # VALID TIME SERIES
+    Observation(unique_id=201, julian_date=None, julian_date_string="17.001"),
+    Observation(unique_id=202, julian_date=None, julian_date_string="17.002"),
+    Observation(unique_id=203, julian_date=None, julian_date_string="17.003"),
+    Observation(unique_id=204, julian_date=None, julian_date_string="17.004"),
+    Observation(unique_id=205, julian_date=None, julian_date_string="17.005"),
+    Observation(unique_id=206, julian_date=None, julian_date_string="17.006"),
+    Observation(unique_id=207, julian_date=None, julian_date_string="17.007"),
+    Observation(unique_id=208, julian_date=None, julian_date_string="17.008"),
+    Observation(unique_id=209, julian_date=None, julian_date_string="17.009"),
+    Observation(unique_id=210, julian_date=None, julian_date_string="17.010"),
+    Observation(unique_id=211, julian_date=None, julian_date_string="17.011"),
+    Observation(unique_id=212, julian_date=None, julian_date_string="17.012"),
+    Observation(unique_id=213, julian_date=None, julian_date_string="17.013"),
+    Observation(unique_id=214, julian_date=None, julian_date_string="17.014"),
+    Observation(unique_id=215, julian_date=None, julian_date_string="17.015"),
+    Observation(unique_id=216, julian_date=None, julian_date_string="17.016"),
+    Observation(unique_id=217, julian_date=None, julian_date_string="17.017"),
+    Observation(unique_id=218, julian_date=None, julian_date_string="17.018"),
+    Observation(unique_id=219, julian_date=None, julian_date_string="17.019"),
+    Observation(unique_id=220, julian_date=None, julian_date_string="17.020"),
+    Observation(unique_id=221, julian_date=None, julian_date_string="17.021"),
+    Observation(unique_id=222, julian_date=None, julian_date_string="17.022"),
+    Observation(unique_id=223, julian_date=None, julian_date_string="17.023"),
+    Observation(unique_id=224, julian_date=None, julian_date_string="17.024")
 ]
 
 
 class TestIdentify(TestCase):
     def test_identify_timeseries(self):
-        timeseries = identify_timeseries(TEST_OBSERVATIONS)
-        self.assertEqual(len(timeseries), 2, "There should be two time series in the dictionary.")
-        first_timeseries = timeseries[2]
-        self.assertEqual(len(first_timeseries), 3, "There should be three observations in the first time series.")
-        second_timeseries = timeseries[6]
-        self.assertEqual(len(second_timeseries), 3, "There should be three observations in the second time series.")
+        validation_dict = dict()
+        timeseries = identify_timeseries(TEST_OBSERVATIONS, validation_dict)
+        self.assertEqual(len(timeseries), 1, "There should be one time series in the dictionary.")
+        first_timeseries = timeseries[201]
+        self.assertEqual(len(first_timeseries), 24, "There should be 24 observations in the time series.")
         # Spot check the time series
-        self.assertEqual(16.07, first_timeseries[2].julian_date, "Test the third observation in the first series.")
-        self.assertEqual(18.86, second_timeseries[1].julian_date, "Test the second observation in the second series.")
+        self.assertEqual(17.003, first_timeseries[2].julian_date, "Test the third observation in the time series.")
