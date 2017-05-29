@@ -7,7 +7,7 @@ import os
 import mysql.connector
 import time
 
-from timeseries_identification import identify_timeseries, Observation, N0, N1, N2, N3, N4, TIMESERIES_THRESHOLD
+from timeseries_identification import identify_timeseries, Observation
 
 USER = os.environ['MYSQL_USER']
 # So that the password does not appear in the code, the password is read from an environment variable.
@@ -70,24 +70,22 @@ def outer_processing_loop():
                                         password=PASSWORD,
                                         host=HOST,
                                         database=DATABASE)  # type: mysql.connector.connection.MySQLConnection
-    outer_cursor = cnx_outer.cursor(buffered=True)  # buffer so its not necessary to read the whole result
+    outer_cursor = cnx_outer.cursor(buffered=True)  # buffer so it's not necessary to read the whole result
     outer_query = "SELECT DISTINCT name, obscode, band FROM temp_observations"
     outer_cursor.execute(outer_query)
-    print(outer_cursor.rowcount)  # how many cases to process?
+    validation_dict = dict()
     for (star_name, observer_code, band) in outer_cursor:
-        # print("Processing {}'s observations of {} in band {}....".format(observer_code, star_name, band))
         observations = read_name_observer_band(star_name, observer_code, band)
-        timeseries_dict = identify_timeseries(observations)
-        # print("Identified {} time series".format(len(timeseries_dict)))
+        timeseries_dict = identify_timeseries(observations, validation_dict)
         write_timeseries(timeseries_dict)
         cnt += 1
-        if 0 == (cnt % 100):  # A progress-bar, because it's going to take a while
-            print("combinations={} observations={} N1={} N2={} N3={}, N4={}".format(cnt, N0, N1, N2, N3, N4))
+        if 0 == (cnt % 100):  # Indicate progress, because it's going to take a while.
+            print("Processed star_name/observer_code/band combinations={}.", cnt)
 
     outer_cursor.close()
     cnx_outer.close()
 
-    print("combinations={} observations={} N1={} N2={} N3={}, N4={}".format(cnt, N0, N1, N2, N3, N4))
+    print("Processed {} combination, validation_dict={}".format(cnt, validation_dict))
     print('{} sec'.format(time.time() - start_time))
 
 
