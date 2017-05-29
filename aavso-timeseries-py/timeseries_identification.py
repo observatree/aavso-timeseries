@@ -1,7 +1,7 @@
 
 import collections
 
-TIMESERIES_THRESHOLD = 0.04166666666  # This is 1/24 (e.g., one hour)
+TIMESERIES_THRESHOLD = 0.01041666666  # This is 1/96 (e.g., 15 minutes)
 
 Observation = collections.namedtuple("Observation", "unique_id julian_date_string julian_date")
 
@@ -68,14 +68,15 @@ def __identify_timeseries(observations: [Observation]):
                     proximate_observations.append(observation)
             else:
                 if proximate_observations:
-                    timeseries = proximate_observations[0].unique_id
-                    timeseries_dict[timeseries] = proximate_observations
+                    if len(proximate_observations) > 2:
+                        timeseries = proximate_observations[0].unique_id
+                        timeseries_dict[timeseries] = proximate_observations
                     proximate_observations = None
 
         last_observation = observation
 
     # Perhaps on the last observation a timeseries was still being added.
-    if proximate_observations:
+    if proximate_observations and len(proximate_observations) > 2:
         timeseries = proximate_observations[0].unique_id
         timeseries_dict[timeseries] = proximate_observations
 
