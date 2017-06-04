@@ -1,10 +1,10 @@
 
 import collections
 
-# A time series must have at least 24 observations at a cadence period of at most 300.0 seconds
+# A time series must have at least 2 observations at a cadence period of at most 12 hours.
 
-MINIMUM_TIME_SERIES_LENGTH = 24
-MAXIMUM_CADENCE_SECONDS = 300.0
+MINIMUM_TIMESERIES_LENGTH = 2
+MAXIMUM_CADENCE_MINUTES = 720
 
 Observation = collections.namedtuple("Observation", "unique_id julian_date_string julian_date")
 
@@ -47,13 +47,13 @@ def proximity_test(observation, last_observation, validation_dict):
         # return True anyway
         return True
 
-    return 86400.0 * (observation.julian_date - last_observation.julian_date) <= MAXIMUM_CADENCE_SECONDS
+    return 1440.0 * (observation.julian_date - last_observation.julian_date) <= MAXIMUM_CADENCE_MINUTES
 
 
 def __conditionally_add(proximate_observations: [Observation], timeseries_dict):
     if proximate_observations:
         timeseries_length = len(proximate_observations)
-        if timeseries_length >= MINIMUM_TIME_SERIES_LENGTH:
+        if timeseries_length >= MINIMUM_TIMESERIES_LENGTH:
             timeseries = proximate_observations[0].unique_id
             timeseries_dict[timeseries] = proximate_observations
 

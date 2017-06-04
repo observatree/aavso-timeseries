@@ -64,8 +64,8 @@ class TestIdentify(TestCase):
     def test_identify_timeseries(self):
         validation_dict = dict()
         timeseries = identify_timeseries(TEST_OBSERVATIONS, validation_dict)
-        self.assertEqual(len(timeseries), 1, "There should be one time series in the dictionary.")
-        first_timeseries = timeseries[201]
-        self.assertEqual(len(first_timeseries), 24, "There should be 24 observations in the time series.")
+        self.assertEqual(len(timeseries), 3, "There should be three time series in the dictionary.")
+        third_timeseries = timeseries[201]
+        self.assertEqual(len(third_timeseries), 24, "There should be 24 observations in the third time series.")
         # Spot check the time series
-        self.assertEqual(17.003, first_timeseries[2].julian_date, "Test the third observation in the time series.")
+        self.assertEqual(17.003, third_timeseries[2].julian_date, "Test the third observation in the time series.")
