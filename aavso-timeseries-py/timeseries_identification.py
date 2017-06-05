@@ -6,7 +6,7 @@ import collections
 MINIMUM_TIMESERIES_LENGTH = 2
 MAXIMUM_CADENCE_MINUTES = 720
 
-Observation = collections.namedtuple("Observation", "unique_id julian_date_string julian_date")
+Observation = collections.namedtuple("Observation", "unique_id name obscode julian_date_string julian_date")
 
 
 def convert_julian_date_string(julian_date_string):
@@ -14,10 +14,10 @@ def convert_julian_date_string(julian_date_string):
 
 
 def increment_invalid(reason, validation_dict):
-    if validation_dict[reason] is None:
-        validation_dict[reason] = 0
-    validation_dict[reason] = validation_dict[reason] + 1
-    return
+    if reason not in validation_dict:
+        validation_dict[reason] = 1
+    else:
+        validation_dict[reason] = validation_dict[reason] + 1
 
 
 def validated(observation, validation_dict):
@@ -37,6 +37,8 @@ def validated(observation, validation_dict):
         return None
 
     return Observation(unique_id=observation.unique_id,
+                       name=observation.name,
+                       obscode=observation.obscode,
                        julian_date_string=None,
                        julian_date=julian_date)
 
@@ -88,8 +90,8 @@ def __identify_timeseries(observations: [Observation], validation_dict):
 
 
 # It is presumed that identify_timeseries will be called with a list of records that
-# are all from the same observer, the same star and the same band. Therefore all that
-# identify_timeseries has to do is examine the Julian dates and look for proximity.
+# are all from the same observer, the same star. Therefore all that identify_timeseries
+# has to do is examine the Julian dates and look for proximity.
 def identify_timeseries(observations: [Observation], validation_dict):
 
     validated_observations = []
