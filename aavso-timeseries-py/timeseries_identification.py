@@ -1,11 +1,14 @@
 
 import collections
 
-# A time series must have at least 2 observations at a cadence period of at most 12 hours.
+# A time series must have at least 10 observations spanning at least 30 minutes
+# with a cadence period of strictly less than 12 hours.
 
-EXCLUDED_TIMESERIES_LENGTH = 1  # Strict comparison. 1 means a timeseries of only 1 frame isn't a timeseries.
-EXCLUDED_TIMESERIES_DURATION_DAYS = 0.0  # Strict comparison. 0.0 means a timeseries must have some duration.
-EXCLUDED_CADENCE_MINUTES = 720.0  # Strict comparison. 720.0 means the cadence must be less than 12 hours.
+MINIMUM_TIMESERIES_LENGTH = 10
+MINIMUM_TIMESERIES_DURATION_MINUTES = 30.0
+MAXIMUM_CADENCE_MINUTES = 6.0
+
+MINUTES_PER_DAY = 1440.0
 
 Observation = collections.namedtuple("Observation", "unique_id name obscode julian_date_string julian_date")
 
@@ -50,7 +53,7 @@ def proximity_test(observation, last_observation, validation_dict):
         # return True anyway
         return True
 
-    return 1440.0 * (observation.julian_date - last_observation.julian_date) < EXCLUDED_CADENCE_MINUTES
+    return MINUTES_PER_DAY * (observation.julian_date - last_observation.julian_date) <= MAXIMUM_CADENCE_MINUTES
 
 
 def duration_days(observations: [Observation]):
@@ -62,8 +65,8 @@ def duration_days(observations: [Observation]):
 def __conditionally_add(proximate_observations: [Observation], timeseries_dict):
     if proximate_observations:
         timeseries_length = len(proximate_observations)
-        if timeseries_length > EXCLUDED_TIMESERIES_LENGTH:
-            if duration_days(proximate_observations) > EXCLUDED_TIMESERIES_DURATION_DAYS:
+        if timeseries_length >= MINIMUM_TIMESERIES_LENGTH:
+            if duration_days(proximate_observations) * MINUTES_PER_DAY >= MINIMUM_TIMESERIES_DURATION_MINUTES:
                 timeseries = proximate_observations[0].unique_id
                 timeseries_dict[timeseries] = proximate_observations
 

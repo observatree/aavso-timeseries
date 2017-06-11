@@ -2,10 +2,6 @@ from unittest import TestCase
 
 from timeseries_identification import identify_timeseries, Observation
 
-# Observations 1, 5 and 9 are not part of any timeseries.
-# Observations 2, 3 and 4 should be grouped into timeseries 1.
-# Observations 7, 8 and 9 should be grouped into timeseries 2.
-
 TEST_OBSERVATIONS = [
     # FAIL DUE TO GAP FROM 112 TO 113
     Observation(unique_id=101, name="TZ BOO", obscode="HBRB", julian_date=None, julian_date_string="15.001"),
@@ -64,8 +60,8 @@ class TestIdentify(TestCase):
     def test_identify_timeseries(self):
         validation_dict = dict()
         timeseries = identify_timeseries(TEST_OBSERVATIONS, validation_dict)
-        self.assertEqual(len(timeseries), 3, "There should be three time series in the dictionary.")
-        third_timeseries = timeseries[201]
-        self.assertEqual(len(third_timeseries), 24, "There should be 24 observations in the third time series.")
+        self.assertEqual(len(timeseries), 1, "There should be one time series in the dictionary.")
+        first_timeseries = timeseries[201]
+        self.assertEqual(len(first_timeseries), 24, "There should be 24 observations in the time series.")
         # Spot check the time series
-        self.assertEqual(17.003, third_timeseries[2].julian_date, "Test the third observation in the time series.")
+        self.assertEqual(17.003, first_timeseries[2].julian_date, "Test the third observation in the time series.")
