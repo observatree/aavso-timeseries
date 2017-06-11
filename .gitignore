@@ -4,7 +4,10 @@
 # Emacs turds
 **/*.*~
 
-# JetBrains IntelliJ IDEA
+# Tableau turds
+**/.~*.twbr
+
+# JetBrains PyCharm
 # These files change too much to check in:
 aavso-timeseries-py/.idea/workspace.xml
 aavso-timeseries-py/.idea/misc.xml
